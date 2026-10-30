@@ -1,0 +1,40 @@
+{
+  "task": "Animar cómo trabaja un agente de IA",
+  "steps": [
+    {
+      "tool": "Bash",
+      "label": "3 pasos: Bash",
+      "group": 3
+    },
+    {
+      "tool": "Bash",
+      "label": "espera una tarea",
+      "error": true,
+      "errorText": "comando bloqueado"
+    },
+    {
+      "tool": "Bash",
+      "label": "revisa el entorno"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código",
+      "error": true,
+      "errorText": "comando mal cerrado"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe data.sample.json"
+    },
+    {
+      "tool": "Read",
+      "label": "27 pasos: Read+Bash",
+      "group": 27
+    },
+    {
+      "tool": "Bash",
+      "label": "26 pasos: Bash+Read",
+      "group": 26
+    }
+  ]
+}

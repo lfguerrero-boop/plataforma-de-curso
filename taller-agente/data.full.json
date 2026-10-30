@@ -1,0 +1,251 @@
+{
+  "task": "Animar cómo trabaja un agente de IA",
+  "steps": [
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Bash",
+      "label": "revisa el entorno"
+    },
+    {
+      "tool": "Bash",
+      "label": "instala dependencias"
+    },
+    {
+      "tool": "Bash",
+      "label": "espera una tarea",
+      "error": true,
+      "errorText": "comando bloqueado"
+    },
+    {
+      "tool": "Bash",
+      "label": "revisa el entorno"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código",
+      "error": true,
+      "errorText": "comando mal cerrado"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe data.sample.json"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe timeline.js"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe gfx.js"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe robot.js"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe world.js"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe scene.js"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe keyframes.js"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame",
+      "error": true,
+      "errorText": "archivo inexistente"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe audio.js"
+    },
+    {
+      "tool": "Bash",
+      "label": "sintetiza el audio"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe render.js"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Write",
+      "label": "escribe extract-session.js"
+    },
+    {
+      "tool": "Bash",
+      "label": "lee el registro de la sesión"
+    },
+    {
+      "tool": "Bash",
+      "label": "lee el registro de la sesión"
+    },
+    {
+      "tool": "Bash",
+      "label": "lee el registro de la sesión"
+    },
+    {
+      "tool": "Bash",
+      "label": "lee el registro de la sesión"
+    },
+    {
+      "tool": "Bash",
+      "label": "lee el registro de la sesión"
+    },
+    {
+      "tool": "Bash",
+      "label": "lee el registro de la sesión"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Bash",
+      "label": "prueba o ajusta el código"
+    },
+    {
+      "tool": "Bash",
+      "label": "renderiza frames clave"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    },
+    {
+      "tool": "Read",
+      "label": "mira un frame"
+    }
+  ]
+}

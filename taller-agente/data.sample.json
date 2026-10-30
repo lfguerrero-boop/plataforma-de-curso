@@ -1,0 +1,11 @@
+{
+  "task": "Crear una animación explicativa",
+  "steps": [
+    { "tool": "Bash",  "label": "revisa el entorno" },
+    { "tool": "Write", "label": "escribe el código" },
+    { "tool": "Bash",  "label": "renderiza un frame", "error": true, "errorText": "módulo no encontrado" },
+    { "tool": "Edit",  "label": "corrige la importación" },
+    { "tool": "Read",  "label": "revisa el resultado" },
+    { "tool": "Bash",  "label": "render final" }
+  ]
+}
