@@ -20,7 +20,7 @@
 - [x] 3.2 Ancho móvil (390 px) en `/`, `/login` y `/registro`: sin desbordamiento horizontal (`scrollWidth` 390) y `.catalog-side` en `static`.
 - [x] 3.3 Catálogo con 25 filas clonadas solo en el DOM del navegador (sin tocar datos): `.catalog-side` queda pegado en `top: 96px` mientras se hace scroll.
 - [x] 3.4 `npm run test:e2e` con la app en marcha y el token cargado desde `.env.local`: 113/113 comprobaciones pasan en los 7 scripts y cada uno limpia sus usuarios de prueba.
-- [ ] 3.5 Commit en una rama (no `main`), separando CSS de documentación/`.gitignore`; verificar con `git log` y que `git status` no muestre el `.html`.
+- [x] 3.5 Commits en la rama `restyle-marketing-academia` (no `main`), separados en CSS, documentación y OpenSpec; verificado con `git log` y `git status` sin el `.html`.
 
 ## Workflow follow-up
 
