@@ -7,7 +7,7 @@ import "./globals.css";
 const chivo = Chivo({
   variable: "--font-chivo",
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["400", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
