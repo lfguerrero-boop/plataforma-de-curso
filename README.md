@@ -5,7 +5,10 @@ Plataforma de cursos al estilo Udemy, enfocada en marketing digital, con dos rol
 Es un ejercicio de aprendizaje: el foco está en la **autorización por rol aplicada con RLS**
 en Supabase, no en la interfaz.
 
-**Stack:** Next.js 16 (App Router) · Supabase (Auth, Postgres, Storage) · TypeScript.
+**Stack:** Next.js 16 (App Router, `cacheComponents`) · Supabase (Auth, Postgres, Storage) ·
+TypeScript · CSS propio (sin librerías) · Three.js para los carteles de la portada.
+
+Repositorio: <https://github.com/lfguerrero-boop/plataforma-de-curso>
 
 ## Qué hace
 
@@ -17,8 +20,10 @@ en Supabase, no en la interfaz.
 
 Fuera de alcance: pagos, video alojado, quizzes, certificados y rol admin.
 
-La especificación completa (requisitos y escenarios) está en
-[openspec/changes/add-course-platform/](openspec/changes/add-course-platform/).
+Las especificaciones vigentes (requisitos y escenarios) están en [openspec/specs/](openspec/specs/):
+`user-roles`, `course-catalog`, `course-management`, `course-enrollment` y `course-reviews`. El
+historial del cambio inicial está en
+[openspec/changes/archive/2026-10-23-add-course-platform/](openspec/changes/archive/2026-10-23-add-course-platform/).
 
 ## Requisitos
 
@@ -59,6 +64,9 @@ La especificación completa (requisitos y escenarios) está en
 
    Nunca pongas la clave `service_role` en la app ni en este archivo: la aplicación solo usa la
    clave publicable con la sesión del usuario, para que RLS siempre se aplique.
+
+   `.env.local` está excluido de git (regla `.env*` del `.gitignore`). No lo subas ni pegues sus
+   valores en el repositorio: es público.
 
 5. **(Solo para desarrollo) desactiva la confirmación de correo** en el dashboard:
    *Authentication → Sign In / Providers → Email → Confirm email*. Sin esto, cada registro de prueba
@@ -110,14 +118,35 @@ Otros comandos: `npm run lint` y `npm run build`.
 ## Estructura
 
 ```
-src/app/                 páginas y Server Actions (catálogo, curso, lección, panel, mis-cursos)
-src/lib/supabase/        clientes de navegador y de servidor
-src/proxy.ts             redirecciones por sesión y rol
-supabase/migrations/     esquema, políticas RLS, Storage y vistas
-supabase/tests/          pruebas SQL de RLS
-scripts/                 ejecutores de pruebas (RLS y E2E)
-openspec/                especificación del cambio (propuesta, specs, diseño y tareas)
+src/app/                 páginas y Server Actions (portada, login, registro, cursos, instructor,
+                         mis-cursos, estado) y todo el estilo en globals.css
+src/components/          action-form, course-rows, home-sections, posters-gl, reveal, site-nav
+src/lib/                 courses.ts (consultas) y supabase/ (clientes de navegador y de servidor)
+src/proxy.ts             redirecciones por sesión y rol (antes "middleware")
+supabase/migrations/     11 migraciones: esquema, políticas RLS, Storage y vistas
+supabase/tests/          11 pruebas SQL de RLS, una por migración
+scripts/                 ejecutores de pruebas (run-rls-tests, run-e2e) y scripts/e2e/*.cjs
+openspec/                specs vigentes, historial archivado y configuración
+public/img/              imágenes de dominio público y créditos (credits.json)
+.claude/ .agents/        comandos /opsx:* y skills de OpenSpec
+taller-agente/           herramientas aparte del producto (audio, gráficos, datos de sesión)
 ```
+
+## Interfaz
+
+Estilo «Marketing Academia»: tema oscuro por defecto (azul marino, verde azulado y azul) y tema claro
+según `prefers-color-scheme`, con la fuente Chivo, esquinas redondeadas contenidas y sombra solo en
+menús y diálogos. Los tokens están en `DESIGN_SYSTEM.md`. La portada dibuja carteles con Three.js sobre
+las `<img>` como mejora progresiva (sin WebGL o con `prefers-reduced-motion` queda el HTML) y las
+animaciones de entrada las hace `reveal.tsx`; sin JavaScript todo queda visible. Los E2E leen el
+HTML por subcadenas, así que al tocar el diseño conserva los `id` y `data-*` (`#catalogo`,
+`#temario`, `data-calificacion`, `data-curso`) y textos como «Inscribirme» o «Mis cursos».
+
+## Control de versiones
+
+- El repositorio es **público**: nunca subas `.env*`, claves ni tokens de acceso.
+- El `.gitignore` excluye `.env*`, `node_modules/` (en cualquier carpeta, incluida
+  `taller-agente/`), `/.next/` y `supabase/.temp/` (datos locales del enlace con tu proyecto).
 
 ## Limitaciones conocidas
 
@@ -125,4 +154,7 @@ openspec/                especificación del cambio (propuesta, specs, diseño y
   comportamiento con JavaScript activo en un navegador.
 - Cualquiera puede registrarse como instructor; un flujo de aprobación sería una mejora futura.
 - Borrar la última lección de un curso publicado no lo despublica.
-- Las páginas usan estilos mínimos: el diseño visual no forma parte del ejercicio.
+- `supabase/.temp/` llegó a subirse en el primer commit (`d2b38d5`) antes de ignorarse; contiene el
+  *project ref* y la URL del pooler, no claves.
+- Una página que llama a `notFound()` dentro de `<Suspense>` responde HTTP 200 con la interfaz de
+  «no encontrado», por el *streaming* de Next 16; las pruebas lo asumen.
