@@ -1,8 +1,10 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth/actions";
 
 async function Estado() {
+  await connection();
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 

@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -50,6 +51,58 @@ export async function signIn(
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) return { error: "Correo o contraseña incorrectos." };
+  redirect("/estado");
+}
+
+// Pide el correo de recuperación. La respuesta es la misma exista o no la cuenta,
+// para no revelar qué correos están registrados.
+export async function requestPasswordReset(
+  _prev: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const email = String(formData.get("email") ?? "").trim();
+  if (!email) return { error: "Escribe tu correo." };
+
+  const h = await headers();
+  const origin = h.get("origin") ?? `http://${h.get("host")}`;
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/nueva-clave`,
+  });
+
+  // Solo se muestran los errores que no dependen de la cuenta (límite de envíos, etc.).
+  if (error && error.status === 429) {
+    return { error: "Demasiados intentos. Espera unos minutos e inténtalo de nuevo." };
+  }
+  return {
+    message:
+      "Si el correo está registrado, te enviamos un enlace para crear una contraseña nueva. Ábrelo en este mismo navegador.",
+  };
+}
+
+export async function updatePassword(
+  _prev: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  if (password.length < 6) {
+    return { error: "La contraseña debe tener al menos 6 caracteres." };
+  }
+  if (password !== confirm) return { error: "Las contraseñas no coinciden." };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "El enlace venció. Pide uno nuevo desde «Olvidé mi contraseña»." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: error.message };
   redirect("/estado");
 }
 

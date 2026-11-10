@@ -49,3 +49,18 @@ El sistema SHALL permitir el área de gestión de cursos solo a usuarios con rol
 #### Scenario: Visitante sin sesión
 - **WHEN** un visitante sin sesión abre una página que requiere autenticación
 - **THEN** el sistema lo redirige al inicio de sesión
+
+### Requirement: Recuperación de contraseña
+El sistema SHALL permitir a cualquier usuario, estudiante o instructor, recuperar el acceso a su cuenta mediante un enlace enviado a su correo, y SHALL NOT revelar si un correo está registrado.
+
+#### Scenario: Solicitud de recuperación
+- **WHEN** un visitante pide recuperar la contraseña con cualquier correo
+- **THEN** el sistema muestra el mismo mensaje de envío, exista o no la cuenta
+
+#### Scenario: Enlace válido
+- **WHEN** el usuario abre el enlace del correo en el mismo navegador y elige una contraseña nueva de al menos 6 caracteres
+- **THEN** la contraseña se actualiza, la sesión queda activa y el rol no cambia
+
+#### Scenario: Enlace vencido o inválido
+- **WHEN** el usuario abre un enlace vencido o ya usado
+- **THEN** el sistema lo envía a pedir un enlace nuevo y no cambia ninguna contraseña

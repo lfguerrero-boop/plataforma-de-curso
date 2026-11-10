@@ -133,12 +133,13 @@ nav[aria-label="Principal"] .brand {
   color: var(--ink);
   text-decoration: none;
 }
-nav[aria-label="Principal"] .brand::before {
-  content: "";
-  width: 14px;
-  height: 14px;
-  background: var(--accent);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+/* Marca (la «M» con la flecha del logo): mosaico oscuro propio, que se lee igual en ambos
+   temas porque sus verdes y azules están pensados para fondo marino. Radio de campos y botones. */
+nav[aria-label="Principal"] .brand img {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
 }
 nav[aria-label="Principal"] a:not(.brand),
 nav[aria-label="Principal"] button {
@@ -161,10 +162,16 @@ nav[aria-label="Principal"] .nav-cta:hover { background: var(--accent-hover); co
 nav[aria-label="Principal"] form { display: inline-flex; }
 @media (max-width: 560px) {
   nav[aria-label="Principal"] { gap: 2px; }
-  nav[aria-label="Principal"] .brand { font-size: 0.9375rem; }
+  nav[aria-label="Principal"] .brand { font-size: 0.9375rem; gap: 8px; }
+  nav[aria-label="Principal"] .brand img { width: 28px; height: 28px; }
   nav[aria-label="Principal"] a[href="/"]:not(.brand) { display: none; }
   nav[aria-label="Principal"] a:not(.brand), nav[aria-label="Principal"] button { padding: 0 10px; }
   nav[aria-label="Principal"] .nav-cta { padding: 0 14px; }
+}
+/* En pantallas muy estrechas el nombre no cabe junto a Entrar y Registrarse sin partirse en
+   dos líneas: queda solo la marca y el nombre sigue disponible para lectores de pantalla. */
+@media (max-width: 440px) {
+  nav[aria-label="Principal"] .brand-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
 
 /* ── Estructura ───────────────────────────── */
@@ -267,7 +274,10 @@ li form button:hover:not(:disabled), .btn-quiet:hover { background: var(--raised
 .posters.gl-ready .posters-grid img { opacity: 0; }
 .posters-grid { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--margin); align-items: start; }
 .posters-grid figure:nth-child(even) { margin-top: 56px; }
-.posters-grid img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; background: var(--surface); border-radius: var(--r-md); }
+.posters-grid img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; background: var(--surface); border-radius: var(--r-md); }
+.posters-grid figcaption { margin-top: 16px; }
+.posters-grid figcaption h3 { font-size: 1.125rem; letter-spacing: -0.02em; }
+.posters-grid figcaption p { margin-top: 4px; font-size: var(--step-small); color: var(--muted); }
 .posters-row { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--margin); align-items: center; margin-top: 80px; }
 .clip { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: var(--surface); border-radius: var(--r-lg); }
 .posters-statement { font-size: var(--step-lead); max-width: 30ch; line-height: 1.35; font-weight: 700; letter-spacing: -0.02em; }
@@ -325,6 +335,10 @@ li form button:hover:not(:disabled), .btn-quiet:hover { background: var(--raised
 .row-value { font-size: var(--step-small); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; padding: 4px 12px; background: var(--raised); border-radius: var(--r-pill); color: var(--ink); }
 #catalogo > li:hover .row-value { background: var(--surface); }
 .row-value.none { color: var(--muted); font-weight: 400; }
+
+/* quiénes somos */
+.about section > p:not(.about-cta) { max-width: 62ch; color: var(--muted); font-size: var(--step-lead); line-height: 1.5; }
+.about .about-cta { margin-top: 28px; }
 
 .empty { padding: 40px 28px; background: var(--surface); border: 1px dashed var(--border-control); border-radius: var(--r-md); color: var(--muted); font-size: var(--step-lead); line-height: 1.4; max-width: none; }
 
@@ -483,3 +497,10 @@ main > section.module { margin: 16px 0; padding: 24px; background: var(--surface
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   .js [data-reveal] { opacity: 1; transform: none; }
 }
+
+/* búsqueda semántica del catálogo */
+.search-box { margin-bottom: 24px; }
+.search-box label { display: block; margin-bottom: 8px; font-size: var(--step-small); font-weight: 700; }
+.search-box div { display: flex; gap: 8px; }
+.search-box input[type="search"] { flex: 1; min-width: 0; }
+.search-clear { display: inline-block; margin-top: 10px; font-size: var(--step-small); }

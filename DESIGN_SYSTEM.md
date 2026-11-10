@@ -107,3 +107,12 @@ El estado `loading` se entrega como un componente aparte, `CourseCardSkeleton`, 
 
 - `category` no existe hoy en la base: el catálogo no distingue IA de marketing digital. Hasta tenerlo, el punto puede usar `brand-teal` fijo.
 - Los tokens de este documento (`surface-*`, `space-*`) usan nombres distintos a los de [src/app/globals.css](src/app/globals.css). Manda el diseño nuevo (decisión del 2026-10-31); al implementar `CourseCard` se traducen así: `surface-100` → `--bg`, `surface-200` → `--surface`, `surface-300` → `--raised`, `ink-muted` → `--muted`, `brand-teal` → `--accent`, `brand-blue` → `--accent-2`, `border-control` → `--border-control`, `focus` → `--focus`, `success` → `--ok`, `warning` → `--warn`, `radius-*` → `--r-*`. `space-*` no tiene equivalente: `globals.css` usa píxeles sueltos y `--margin`.
+
+## 3. Imágenes de servicios (excepción)
+
+Las cuatro imágenes de la franja de servicios de la portada (`public/img/servicio-*.webp`) son arte generado con brillo neón y degradados en verde sobre negro. Rompen la regla de «planos de color, sin degradados» a propósito: son **contenido**, como una fotografía, no estilo de interfaz.
+
+- **Alcance.** Solo esas imágenes. Ningún componente, fondo ni botón usa brillo, degradado ni ese verde neón; la interfaz sigue con `--accent` y `--accent-2`.
+- **Marco.** Se muestran con el radio `--r-md`, sin borde propio y sin sombra. El efecto WebGL aplica el mismo radio en el *shader*.
+- **Sin texto dentro.** Solo la ilustración (322×322). El título y la descripción son texto real en Chivo, en el `<figcaption>`: así se pueden editar, traducir y leer con lector de pantalla.
+- **Tamaño.** Con 322 px de ancho se ven nítidas en pantallas normales y algo blandas en las de alta densidad; si se sustituyen, conviene un original de al menos 600 px por pieza.

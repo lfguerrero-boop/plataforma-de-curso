@@ -10,6 +10,9 @@ export default function LoginPage() {
         <LoginForm />
       </div>
       <p className="auth-alt">
+        <Link href="/recuperar">¿Olvidaste tu contraseña?</Link>
+      </p>
+      <p className="auth-alt">
         ¿No tienes cuenta? <Link href="/registro">Regístrate</Link>
       </p>
     </main>

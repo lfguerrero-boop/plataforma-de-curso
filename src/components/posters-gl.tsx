@@ -24,8 +24,13 @@ const FRAG = /* glsl */ `
   uniform vec2 uImg;
   uniform float uVel;
   uniform float uReveal;
+  uniform float uRadius;
   varying vec2 vUv;
   void main() {
+    // esquinas redondeadas con el radio del sistema (--r-md); 1 unidad = 1 px
+    vec2 q = abs((vUv - 0.5) * uPlane) - uPlane * 0.5 + uRadius;
+    float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - uRadius;
+    float a = 1.0 - smoothstep(-1.0, 0.5, d);
     // object-fit: cover
     vec2 uv = vUv - 0.5;
     float pa = uPlane.x / uPlane.y;
@@ -40,8 +45,8 @@ const FRAG = /* glsl */ `
     );
     // barrido de arriba hacia abajo
     float m = 1.0 - step(uReveal * 1.02, 1.0 - vUv.y);
-    if (m < 0.5) discard;
-    gl_FragColor = vec4(c, 1.0);
+    if (m < 0.5 || a <= 0.0) discard;
+    gl_FragColor = vec4(c, a);
     #include <colorspace_fragment>
   }
 `;
@@ -101,7 +106,9 @@ export function PostersGL() {
         const material = new THREE.ShaderMaterial({
           vertexShader: VERT,
           fragmentShader: FRAG,
+          transparent: true,
           uniforms: {
+            uRadius: { value: 12 },
             uTex: { value: null },
             uPlane: { value: new THREE.Vector2(3, 4) },
             uImg: { value: new THREE.Vector2(3, 4) },

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -16,6 +17,7 @@ import {
 } from "@/app/instructor/actions";
 
 async function Course({ params }: { params: Promise<{ id: string }> }) {
+  await connection();
   const { id } = await params;
   const supabase = await createClient();
 

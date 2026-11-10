@@ -24,7 +24,22 @@ export function Reveal() {
       { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
     );
     document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+
+    // Lo que llega después por streaming (resultados de búsqueda, catálogo lento) también
+    // debe revelarse: sin esto quedaría con opacity 0 para siempre.
+    const mo = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        m.addedNodes.forEach((node) => {
+          if (!(node instanceof Element)) return;
+          if (node.hasAttribute("data-reveal")) io.observe(node);
+          node.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+        });
+      }
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+
     return () => {
+      mo.disconnect();
       io.disconnect();
       root.classList.remove("js");
     };

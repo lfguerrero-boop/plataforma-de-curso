@@ -20,23 +20,29 @@ export function Hero() {
   );
 }
 
-const POSTERS = [
-  { src: "/img/moulin-rouge.jpg", w: 900, h: 1268, alt: "Cartel de Toulouse-Lautrec para el Moulin Rouge: una bailarina y su pareja", cap: "Toulouse-Lautrec, 1891" },
-  { src: "/img/stearns.jpg", w: 900, h: 1210, alt: "Cartel de bicicletas Stearns con una ciclista", cap: "Bicicletas Stearns, 1896" },
-  { src: "/img/divan-japonais.jpg", w: 900, h: 1194, alt: "Cartel de Toulouse-Lautrec para el cabaré Divan Japonais", cap: "Toulouse-Lautrec, 1893" },
-  { src: "/img/cycles-perfecta.jpg", w: 900, h: 1268, alt: "Cartel de Alphonse Mucha para las bicicletas Perfecta", cap: "Alphonse Mucha, 1902" },
+// Los 4 servicios. Las imágenes son solo la ilustración (322x322): el título y la descripción van
+// como texto real, no dentro de la imagen. El efecto WebGL las carga por su src y recorta como cover.
+const SERVICES = [
+  { src: "/img/servicio-embudo.webp", alt: "Un embudo de cristal con personas entrando y paneles de gráficos alrededor", title: "Funnels y dashboards", text: "Optimización inteligente" },
+  { src: "/img/servicio-atencion.webp", alt: "Un robot sonriente con globos de chat y un mensaje 24/7", title: "Atención al cliente", text: "Soporte 24/7 sin límites" },
+  { src: "/img/servicio-agentes.webp", alt: "Un robot humanoide señalando paneles de prospectos y ventas", title: "Agentes de venta IA", text: "Cierre de ventas automático" },
+  { src: "/img/servicio-generativa.webp", alt: "Un rostro con un cerebro luminoso rodeado de pinceles, código y texto", title: "IA generativa", text: "Creatividad y contenido" },
 ];
 
 export function Posters() {
   return (
-    <section className="posters" aria-labelledby="carteles-titulo">
-      <h2 id="carteles-titulo" className="sr-only">
-        Un siglo de publicidad
+    <section className="posters" aria-labelledby="ilustraciones-titulo">
+      <h2 id="ilustraciones-titulo" className="sr-only">
+        Servicios de marketing con inteligencia artificial
       </h2>
       <div className="posters-grid">
-        {POSTERS.map((p, i) => (
+        {SERVICES.map((p, i) => (
           <figure key={p.src} data-reveal style={{ "--i": i } as React.CSSProperties}>
-            <Image src={p.src} width={p.w} height={p.h} alt={p.alt} unoptimized loading="lazy" />
+            <Image src={p.src} width={322} height={322} alt={p.alt} unoptimized loading="lazy" />
+            <figcaption>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </figcaption>
           </figure>
         ))}
       </div>
@@ -123,11 +129,7 @@ export function HomeFooter() {
           <li><Link href="/registro">Crear cuenta</Link></li>
         </ul>
         <p className="footer-credits">
-          Carteles:{" "}
-          <a href="https://commons.wikimedia.org/wiki/File:(Albi)_Moulin-rouge._La_Goulue_et_Valentin_le_desoss%C3%A9_-_Toulouse-Lautrec_1891_-_Inv.138.jpg">Moulin-rouge. La Goulue et Valentin le désossé</a>, Toulouse-Lautrec, 1891;{" "}
-          <a href="https://commons.wikimedia.org/wiki/File:Ride_a_Stearns_and_be_content,_bicycle_advertising_poster,_1896.jpg">Ride a Stearns and be content</a>, Edward Penfield, 1896;{" "}
-          <a href="https://commons.wikimedia.org/wiki/File:(Albi)_Le_Divan_japonais_1893_lithographie_-_Toulouse-Lautrec_MTH.A3.jpg">Le Divan japonais</a>, Toulouse-Lautrec, 1893;{" "}
-          <a href="https://commons.wikimedia.org/wiki/File:Alfons_Mucha_-_1902_-_Cycles_Perfecta.jpg">Cycles Perfecta</a>, Alphonse Mucha, 1902. Anuncio de televisión:{" "}
+          Anuncio de televisión:{" "}
           <a href="https://commons.wikimedia.org/wiki/File:Gillette_Super-Speed_TV_commercial_with_Pee_Wee_Reese_circa_1956.webm">Gillette Super-Speed TV commercial with Pee Wee Reese</a>, The Gillette Company, hacia 1956 (fragmento). Dominio público, vía Wikimedia Commons.
         </p>
       </div>

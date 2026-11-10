@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Scripts de prueba en Node (CommonJS), fuera de la app.
     "scripts/**",
+    // Edge Functions de Supabase: corren en Deno, no en la app de Next.
+    "supabase/functions/**",
     // Animación explicativa (proyecto aparte, no forma parte de la app).
     "taller-agente/**",
   ]),

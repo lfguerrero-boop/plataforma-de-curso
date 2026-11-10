@@ -10,6 +10,7 @@ import {
   isLevel,
   levelLabel,
 } from "@/lib/courses";
+import { searchCourses } from "@/lib/course-search";
 import { CourseRows, type CourseRowData } from "@/components/course-rows";
 import { PostersGL } from "@/components/posters-gl";
 import { Reveal } from "@/components/reveal";
@@ -21,11 +22,72 @@ import {
   Posters,
 } from "@/components/home-sections";
 
-type SearchParams = Promise<{ category?: string; level?: string }>;
+type SearchParams = Promise<{ category?: string; level?: string; q?: string }>;
+
+// Búsqueda semántica: devuelve los más parecidos a lo que la persona escribió, de más a
+// menos relevante; la categoría y el nivel se filtran en la base (match_courses).
+async function SearchResults({
+  phrase,
+  category,
+  level,
+}: {
+  phrase: string;
+  category?: string;
+  level?: string;
+}) {
+  const supabase = await createClient();
+  const { data: found, error } = await searchCourses(supabase, phrase, {
+    limit: 8,
+    category,
+    level,
+  });
+  if (error) {
+    return <p role="alert">{error}</p>;
+  }
+  if (!found.length) {
+    return (
+      <p id="sin-resultados" className="empty">
+        Ningún curso se parece a «{phrase}». Prueba con otras palabras.
+      </p>
+    );
+  }
+
+  const rows: CourseRowData[] = found.map((c) => ({
+    id: c.id,
+    title: c.title,
+    description: c.description,
+    meta: `${categoryLabel(c.category)} · ${levelLabel(c.level)}${c.instructor_name ? ` · ${c.instructor_name}` : ""}`,
+    rating:
+      c.avg_rating !== null && c.review_count !== null
+        ? { avg: Number(c.avg_rating), count: c.review_count }
+        : null,
+  }));
+
+  // Un solo elemento: el catálogo es una cuadrícula de dos columnas y un fragmento con
+  // dos hijos mandaría la lista a la columna estrecha de abajo.
+  return (
+    <div>
+      <p id="busqueda-resumen" className="muted">
+        Cursos más parecidos a «{phrase}»
+      </p>
+      <CourseRows rows={rows} />
+    </div>
+  );
+}
 
 async function Catalog({ searchParams }: { searchParams: SearchParams }) {
   await connection();
-  const { category, level } = await searchParams;
+  const { category, level, q } = await searchParams;
+  const phrase = q?.trim();
+  if (phrase) {
+    return (
+      <SearchResults
+        phrase={phrase}
+        category={category && isCategory(category) ? category : undefined}
+        level={level && isLevel(level) ? level : undefined}
+      />
+    );
+  }
   const supabase = await createClient();
 
   // El filtro de estado es explícito: un instructor con sesión también vería sus
@@ -82,30 +144,54 @@ async function Catalog({ searchParams }: { searchParams: SearchParams }) {
   return <CourseRows rows={rows} />;
 }
 
-function hrefFor(category?: string, level?: string) {
+function hrefFor(category?: string, level?: string, phrase?: string) {
   const q = new URLSearchParams();
   if (category) q.set("category", category);
   if (level) q.set("level", level);
+  if (phrase) q.set("q", phrase);
   const s = q.toString();
   return `/${s ? `?${s}` : ""}#catalogo-seccion`;
 }
 
 async function Filters({ searchParams }: { searchParams: SearchParams }) {
-  const { category, level } = await searchParams;
+  const { category, level, q } = await searchParams;
   const cat = category && isCategory(category) ? category : undefined;
   const lvl = level && isLevel(level) ? level : undefined;
+  const phrase = q?.trim() || undefined;
 
   return (
     <nav aria-label="Filtros del catálogo">
+      {/* GET sin JavaScript: la búsqueda vive en la URL y conserva los filtros. */}
+      <form action="/#catalogo-seccion" method="get" role="search" className="search-box">
+        <label htmlFor="busqueda">Cuéntanos qué necesitas</label>
+        <div>
+          <input
+            id="busqueda"
+            name="q"
+            type="search"
+            maxLength={300}
+            defaultValue={phrase}
+            placeholder="Quiero aprender a vender por redes"
+          />
+          {cat && <input type="hidden" name="category" value={cat} />}
+          {lvl && <input type="hidden" name="level" value={lvl} />}
+          <button type="submit">Buscar</button>
+        </div>
+        {phrase && (
+          <Link href={hrefFor(cat, lvl)} className="search-clear">
+            Quitar búsqueda
+          </Link>
+        )}
+      </form>
       <ul className="cat-list" data-reveal>
         <li>
-          <Link href={hrefFor(undefined, lvl)} aria-current={!cat}>
+          <Link href={hrefFor(undefined, lvl, phrase)} aria-current={!cat}>
             Todas
           </Link>
         </li>
         {CATEGORIES.map((c) => (
           <li key={c.value}>
-            <Link href={hrefFor(c.value, lvl)} aria-current={cat === c.value}>
+            <Link href={hrefFor(c.value, lvl, phrase)} aria-current={cat === c.value}>
               {c.label}
             </Link>
           </li>
@@ -113,13 +199,13 @@ async function Filters({ searchParams }: { searchParams: SearchParams }) {
       </ul>
       <ul className="level-list">
         <li>
-          <Link href={hrefFor(cat, undefined)} aria-current={!lvl}>
+          <Link href={hrefFor(cat, undefined, phrase)} aria-current={!lvl}>
             Todos los niveles
           </Link>
         </li>
         {LEVELS.map((l) => (
           <li key={l.value}>
-            <Link href={hrefFor(cat, l.value)} aria-current={lvl === l.value}>
+            <Link href={hrefFor(cat, l.value, phrase)} aria-current={lvl === l.value}>
               {l.label}
             </Link>
           </li>

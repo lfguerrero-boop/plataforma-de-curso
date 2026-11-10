@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
@@ -22,9 +23,12 @@ export async function SiteNav() {
   return (
     <nav aria-label="Principal">
       <Link href="/" className="brand">
-        Marketing Academy
+        {/* Decorativa: el nombre ya va en texto al lado. */}
+        <Image src="/img/logo-mark.png" width={32} height={32} alt="" unoptimized loading="eager" />
+        <span className="brand-name">Marketing Academy</span>
       </Link>
       <Link href="/">Catálogo</Link>
+      <Link href="/quienes-somos">Quiénes somos</Link>
       {role === "student" && <Link href="/mis-cursos">Mis cursos</Link>}
       {role === "instructor" && <Link href="/instructor">Panel del instructor</Link>}
       {user ? (

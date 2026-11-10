@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -9,6 +10,7 @@ import {
 } from "@/lib/courses";
 
 async function Courses() {
+  await connection();
   const supabase = await createClient();
   // RLS devuelve solo los cursos del instructor autenticado, en cualquier estado.
   const { data: courses } = await supabase

@@ -6,7 +6,7 @@ Es un ejercicio de aprendizaje: el foco está en la **autorización por rol apli
 en Supabase, no en la interfaz.
 
 **Stack:** Next.js 16 (App Router, `cacheComponents`) · Supabase (Auth, Postgres, Storage) ·
-TypeScript · CSS propio (sin librerías) · Three.js para los carteles de la portada.
+TypeScript · CSS propio (sin librerías) · Three.js para las ilustraciones de la portada.
 
 Repositorio: <https://github.com/lfguerrero-boop/plataforma-de-curso>
 
@@ -73,6 +73,11 @@ historial del cambio inicial está en
    envía un correo y el plan gratuito limita los envíos a unos pocos por hora. Vuelve a activarla
    antes de usar la app con usuarios reales.
 
+   **Recuperación de contraseña:** en el dashboard, *Authentication → URL Configuration*, pon como
+   *Site URL* `http://localhost:3000` y añade `http://localhost:3000/auth/callback` a *Redirect URLs*
+   (y la URL pública cuando despliegues). Sin esto el enlace del correo no vuelve a la app.
+   El plan gratuito limita los correos por hora.
+
 6. **Arranca la app**
 
    ```bash
@@ -127,7 +132,7 @@ supabase/migrations/     11 migraciones: esquema, políticas RLS, Storage y vist
 supabase/tests/          11 pruebas SQL de RLS, una por migración
 scripts/                 ejecutores de pruebas (run-rls-tests, run-e2e) y scripts/e2e/*.cjs
 openspec/                specs vigentes, historial archivado y configuración
-public/img/              imágenes de dominio público y créditos (credits.json)
+public/img/              imágenes de los servicios, logo y el video de dominio público con su crédito (credits.json)
 .claude/ .agents/        comandos /opsx:* y skills de OpenSpec
 taller-agente/           herramientas aparte del producto (audio, gráficos, datos de sesión)
 ```
@@ -136,7 +141,7 @@ taller-agente/           herramientas aparte del producto (audio, gráficos, dat
 
 Estilo «Marketing Academia»: tema oscuro por defecto (azul marino, verde azulado y azul) y tema claro
 según `prefers-color-scheme`, con la fuente Chivo, esquinas redondeadas contenidas y sombra solo en
-menús y diálogos. Los tokens están en `DESIGN_SYSTEM.md`. La portada dibuja carteles con Three.js sobre
+menús y diálogos. Los tokens están en `DESIGN_SYSTEM.md`. La portada dibuja las ilustraciones con Three.js sobre
 las `<img>` como mejora progresiva (sin WebGL o con `prefers-reduced-motion` queda el HTML) y las
 animaciones de entrada las hace `reveal.tsx`; sin JavaScript todo queda visible. Los E2E leen el
 HTML por subcadenas, así que al tocar el diseño conserva los `id` y `data-*` (`#catalogo`,
