@@ -46,3 +46,10 @@ supabase/.temp/
 
 # maqueta de diseño (prototipo local, no forma parte de la app)
 marketing-academia.html
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

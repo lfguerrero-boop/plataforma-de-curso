@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { FormState } from "@/components/action-form";
+import { parseRating } from "@/lib/ratings";
 
 // Cada Server Function exige sesión; quién puede qué lo decide RLS en la base.
 async function requireUser() {
@@ -46,11 +47,9 @@ export async function saveReview(
 ): Promise<FormState> {
   const { supabase, user } = await requireUser();
   const courseId = text(formData, "course_id");
-  const rating = Number(text(formData, "rating"));
-
-  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-    return { error: "La calificación debe ser un número entero de 1 a 5." };
-  }
+  const parsed = parseRating(text(formData, "rating"));
+  if (!parsed.ok) return { error: parsed.error };
+  const { rating } = parsed;
 
   // Una reseña por estudiante y curso: guardar de nuevo la actualiza.
   const { error } = await supabase.from("reviews").upsert({

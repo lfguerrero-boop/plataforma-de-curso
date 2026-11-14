@@ -11,6 +11,7 @@ import {
   levelLabel,
 } from "@/lib/courses";
 import { searchCourses } from "@/lib/course-search";
+import { toCourseRating } from "@/lib/ratings";
 import { CourseRows, type CourseRowData } from "@/components/course-rows";
 import { PostersGL } from "@/components/posters-gl";
 import { Reveal } from "@/components/reveal";
@@ -57,10 +58,7 @@ async function SearchResults({
     title: c.title,
     description: c.description,
     meta: `${categoryLabel(c.category)} · ${levelLabel(c.level)}${c.instructor_name ? ` · ${c.instructor_name}` : ""}`,
-    rating:
-      c.avg_rating !== null && c.review_count !== null
-        ? { avg: Number(c.avg_rating), count: c.review_count }
-        : null,
+    rating: toCourseRating(c),
   }));
 
   // Un solo elemento: el catálogo es una cuadrícula de dos columnas y un fragmento con
@@ -135,9 +133,7 @@ async function Catalog({ searchParams }: { searchParams: SearchParams }) {
       title: c.title,
       description: c.description,
       meta: `${categoryLabel(c.category)} · ${levelLabel(c.level)}${instructor?.full_name ? ` · ${instructor.full_name}` : ""}`,
-      rating: rating
-        ? { avg: Number(rating.avg_rating), count: rating.review_count }
-        : null,
+      rating: toCourseRating(rating),
     };
   });
 

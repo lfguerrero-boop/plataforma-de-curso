@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { categoryLabel, levelLabel } from "@/lib/courses";
 import { ActionForm } from "@/components/action-form";
 import { deleteReview, enroll, saveReview } from "@/app/cursos/actions";
+import { RATING_OPTIONS, formatRatingLong, toCourseRating } from "@/lib/ratings";
 
 type Params = Promise<{ id: string }>;
 
@@ -94,9 +95,7 @@ async function Course({ params }: { params: Params }) {
           {instructor?.full_name ? ` · Por ${instructor.full_name}` : ""}
         </p>
         <p id="calificacion" className="rating">
-          {ratingRow
-            ? `Calificación: ${Number(ratingRow.avg_rating).toFixed(1)} / 5 (${ratingRow.review_count} ${ratingRow.review_count === 1 ? "reseña" : "reseñas"})`
-            : "Sin calificar"}
+          {formatRatingLong(toCourseRating(ratingRow))}
         </p>
         {course.status === "draft" && (
           <p className="draft-note">(Borrador: solo tú puedes verlo)</p>
@@ -175,7 +174,7 @@ async function Course({ params }: { params: Params }) {
             <label>
               Calificación
               <select name="rating" defaultValue={String(myReview?.rating ?? 5)}>
-                {[5, 4, 3, 2, 1].map((n) => (
+                {RATING_OPTIONS.map((n) => (
                   <option key={n} value={n}>
                     {n}
                   </option>

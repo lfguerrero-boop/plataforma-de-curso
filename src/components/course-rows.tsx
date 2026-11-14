@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { formatRatingShort, type CourseRating } from "@/lib/ratings";
 
 export type CourseRowData = {
   id: string;
   title: string;
   description: string | null;
   meta: string;
-  rating: { avg: number; count: number } | null;
+  rating: CourseRating | null;
 };
 
 // Filas del catálogo: sin cajas; un punto, el nombre, una línea de detalle y el valor al extremo.
@@ -26,9 +27,7 @@ export function CourseRows({ rows }: { rows: CourseRowData[] }) {
             data-calificacion={c.id}
             className={c.rating ? "row-value" : "row-value none"}
           >
-            {c.rating
-              ? `${c.rating.avg.toFixed(1)}/5 (${c.rating.count})`
-              : "Sin calificar"}
+            {formatRatingShort(c.rating)}
           </p>
         </li>
       ))}

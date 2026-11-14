@@ -2,6 +2,7 @@ import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { categoryLabel, levelLabel } from "@/lib/courses";
 import { CourseRows, type CourseRowData } from "@/components/course-rows";
+import { toCourseRating } from "@/lib/ratings";
 
 const FEATURED_COUNT = 3;
 
@@ -56,7 +57,7 @@ export async function FeaturedCourses() {
       ]
         .filter(Boolean)
         .join(" · "),
-      rating: rating ? { avg: Number(rating.avg_rating), count: rating.review_count } : null,
+      rating: toCourseRating(rating),
     };
   });
 
