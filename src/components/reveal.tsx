@@ -7,9 +7,25 @@ export function Reveal() {
   useEffect(() => {
     const root = document.documentElement;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.querySelectorAll<HTMLVideoElement>("video[data-loop]").forEach((v) => {
-      if (reduce) v.pause();
-    });
+    // El video no se descarga hasta estar cerca de la pantalla; con reduced-motion se queda
+    // el póster. Sin JavaScript también se queda el póster.
+    const clips = Array.from(document.querySelectorAll<HTMLVideoElement>("video[data-src]"));
+    let clipIo: IntersectionObserver | undefined;
+    if (!reduce && clips.length && "IntersectionObserver" in window) {
+      clipIo = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            const v = e.target as HTMLVideoElement;
+            clipIo?.unobserve(v);
+            v.src = v.dataset.src!;
+            void v.play().catch(() => {});
+          }
+        },
+        { rootMargin: "200px" },
+      );
+      clips.forEach((v) => clipIo!.observe(v));
+    }
     if (reduce || !("IntersectionObserver" in window)) return;
     root.classList.add("js");
     const io = new IntersectionObserver(
@@ -39,6 +55,7 @@ export function Reveal() {
     mo.observe(document.body, { childList: true, subtree: true });
 
     return () => {
+      clipIo?.disconnect();
       mo.disconnect();
       io.disconnect();
       root.classList.remove("js");

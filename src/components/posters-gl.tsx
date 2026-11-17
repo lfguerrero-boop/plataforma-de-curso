@@ -60,6 +60,21 @@ type Item = {
   ready: boolean;
 };
 
+// Espera a que la página termine de cargar y el navegador esté en reposo.
+function afterLoadAndIdle(): Promise<void> {
+  return new Promise((resolve) => {
+    const idle = () => {
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(() => resolve(), { timeout: 2000 });
+      } else {
+        setTimeout(resolve, 200);
+      }
+    };
+    if (document.readyState === "complete") idle();
+    else window.addEventListener("load", idle, { once: true });
+  });
+}
+
 export function PostersGL() {
   useEffect(() => {
     const section = document.querySelector<HTMLElement>(".posters");
@@ -74,9 +89,9 @@ export function PostersGL() {
     let cancelled = false;
 
     const start = async () => {
-      let THREE: typeof ThreeNS;
+      let THREE: typeof import("./three-subset");
       try {
-        THREE = await import("three");
+        THREE = await import("./three-subset");
       } catch {
         return;
       }
@@ -236,7 +251,10 @@ export function PostersGL() {
       ([e]) => {
         if (e.isIntersecting) {
           io.disconnect();
-          void start();
+          // Ni la descarga ni el arranque de Three compiten con la carga inicial.
+          void afterLoadAndIdle().then(() => {
+            if (!cancelled) void start();
+          });
         }
       },
       { rootMargin: "400px" },

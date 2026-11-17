@@ -87,6 +87,12 @@ historial del cambio inicial está en
    Abre <http://localhost:3000>, regístrate como instructor o estudiante en `/registro` y recorre
    el flujo.
 
+   Para probar la versión de producción (también valida los tipos):
+
+   ```bash
+   npm run build && npm start
+   ```
+
 ## Pruebas
 
 Hay dos niveles; ambos necesitan un token de acceso de Supabase (Account → Access Tokens) para
@@ -102,7 +108,6 @@ export SUPABASE_ACCESS_TOKEN=sbp_...
 | Comando | Qué verifica |
 | --- | --- |
 | `npm run test:rls` | Ejecuta [supabase/tests/](supabase/tests/) contra el proyecto enlazado. Cada archivo simula visitante, estudiante, instructor dueño y otro instructor, y comprueba que **la base** acepta o rechaza cada operación. Todo corre en una transacción con `ROLLBACK`, sin dejar datos. |
-| `npm run test:e2e` | Con la app en marcha (`npm run dev`), recorre el flujo completo con sesiones y formularios reales: registro, login, panel del instructor, catálogo, inscripción, progreso, recursos y reseñas. Crea usuarios `@example.com` temporales y los borra al terminar. Usa `E2E_BASE` si la app no corre en `http://localhost:3000`. |
 
 Otros comandos: `npm run lint` y `npm run build`.
 

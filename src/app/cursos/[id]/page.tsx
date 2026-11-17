@@ -15,14 +15,31 @@ async function Course({ params }: { params: Params }) {
   const { id } = await params;
   const supabase = await createClient();
 
-  // RLS oculta los borradores ajenos; un id inexistente o ajeno da el mismo 404.
-  const { data: course } = await supabase
-    .from("courses")
-    .select(
-      "id, title, description, category, level, status, instructor_id, instructor:profiles!courses_instructor_id_fkey(full_name), modules(id, title, position, lessons(id, title, position))",
-    )
-    .eq("id", id)
-    .maybeSingle();
+  // Todo lo que no depende de otra respuesta sale a la vez: antes eran 7 viajes en serie.
+  // RLS sigue decidiendo qué filas se ven; la app solo reparte las consultas.
+  const [{ data: course }, { data: auth }, { data: reviews }, { data: ratingRow }] =
+    await Promise.all([
+      // RLS oculta los borradores ajenos; un id inexistente o ajeno da el mismo 404.
+      supabase
+        .from("courses")
+        .select(
+          "id, title, description, category, level, status, instructor_id, instructor:profiles!courses_instructor_id_fkey(full_name), modules(id, title, position, lessons(id, title, position))",
+        )
+        .eq("id", id)
+        .maybeSingle(),
+      supabase.auth.getUser(),
+      // Reseñas públicas de cursos publicados (RLS) y calificación promedio.
+      supabase
+        .from("reviews")
+        .select("student_id, rating, comment")
+        .eq("course_id", id)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("course_ratings")
+        .select("avg_rating, review_count")
+        .eq("course_id", id)
+        .maybeSingle(),
+    ]);
 
   if (!course) notFound();
 
@@ -34,48 +51,33 @@ async function Course({ params }: { params: Params }) {
   const modules = [...course.modules].sort((a, b) => a.position - b.position);
 
   // Estado del visitante frente al curso.
-  const { data: auth } = await supabase.auth.getUser();
   const user = auth.user;
   let role: string | null = null;
   let enrolled = false;
   const done = new Set<string>();
 
   if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-    role = profile?.role ?? null;
-
-    if (role === "student") {
-      const { data: enrollment } = await supabase
+    // El perfil y la inscripción no dependen entre sí. Un instructor dueño también ve
+    // inscripciones por RLS, así que solo cuenta como «inscrito» quien tiene rol student.
+    const [{ data: profile }, { data: enrollment }] = await Promise.all([
+      supabase.from("profiles").select("role").eq("id", user.id).single(),
+      supabase
         .from("enrollments")
         .select("course_id")
         .eq("course_id", course.id)
-        .maybeSingle();
-      enrolled = !!enrollment;
+        .maybeSingle(),
+    ]);
+    role = profile?.role ?? null;
+    enrolled = role === "student" && !!enrollment;
 
-      if (enrolled) {
-        const { data: progress } = await supabase
-          .from("lesson_progress")
-          .select("lesson_id");
-        progress?.forEach((p) => done.add(p.lesson_id));
-      }
+    if (enrolled) {
+      const { data: progress } = await supabase
+        .from("lesson_progress")
+        .select("lesson_id");
+      progress?.forEach((p) => done.add(p.lesson_id));
     }
   }
 
-  // Reseñas públicas de cursos publicados (RLS) y calificación promedio.
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select("student_id, rating, comment")
-    .eq("course_id", course.id)
-    .order("created_at", { ascending: false });
-  const { data: ratingRow } = await supabase
-    .from("course_ratings")
-    .select("avg_rating, review_count")
-    .eq("course_id", course.id)
-    .maybeSingle();
   const myReview = reviews?.find((r) => r.student_id === user?.id);
 
   const isOwner = user?.id === course.instructor_id;

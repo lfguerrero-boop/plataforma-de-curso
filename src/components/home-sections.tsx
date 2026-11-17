@@ -38,7 +38,16 @@ export function Posters() {
       <div className="posters-grid">
         {SERVICES.map((p, i) => (
           <figure key={p.src} data-reveal style={{ "--i": i } as React.CSSProperties}>
-            <Image src={p.src} width={322} height={322} alt={p.alt} unoptimized loading="lazy" />
+            <Image
+              src={p.src}
+              width={322}
+              height={322}
+              alt={p.alt}
+              unoptimized
+              // La primera ilustración es el LCP en móvil: sin lazy y con prioridad alta.
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : undefined}
+            />
             <figcaption>
               <h3>{p.title}</h3>
               <p>{p.text}</p>
@@ -50,16 +59,15 @@ export function Posters() {
         <video
           className="clip"
           data-loop
-          autoPlay
+          data-src="/img/anuncio-1956.mp4"
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster="/img/anuncio-1956-poster.jpg"
           aria-label="Fragmento mudo de un anuncio de televisión de 1956: dos hombres conversan en un campo de béisbol"
-        >
-          <source src="/img/anuncio-1956.mp4" type="video/mp4" />
-        </video>
+        />
+
         <p className="posters-statement" data-reveal>
           La publicidad lleva un siglo persuadiendo. Lo nuevo es que ahora se
           mide. Aquí aprendes las dos cosas.
